@@ -1,34 +1,64 @@
-from fastapi import APIRouter, HTTPException
-from app.models import ExampleRequest, ExampleResponse
-from datetime import datetime
+import fastapi as fastapi
 from typing import List
 
-router = APIRouter()
+from app.models import SampleResponse
 
-# In-memory storage for demo (use database in production)
-items_db = []
-next_id = 1
+router = fastapi.APIRouter()
 
-@router.get("/items", response_model=List[ExampleResponse])
-async def get_items():
-    return items_db
+samples = {
+    "21031": [
+        {
+            "condition": "Melanoma",
+            "platform": "Visium",
+            "cell_types_image": "Vis_21031_Mel_stlearn.png",
+            "h_and_e_image": "Vis_21031_Mel_stlearn.png",
+            "data": "21031_Mel_stlearn.h5ad",
+        }
+    ],
+    "B18": [
+        {
+            "condition": "SCC",
+            "platform": "Visium",
+            "cell_types_image": "Vis_B18_SCC_stlearn.png",
+            "h_and_e_image": "Vis_B18_SCC_stlearn.png",
+            "data": "B18_BCC_stlearn.h5ad",
+        },
+    ],
+    "F21": [
+        {
+            "condition": "BCC",
+            "platform": "Visium",
+            "cell_types_image": "Vis_B18_SCC_stlearn.png",
+            "h_and_e_image": "Vis_B18_SCC_stlearn.png",
+            "data": "B18_BCC_stlearn.h5ad",
+        }
+    ],
+    "E15": [
+        {
+            "condition": "BCC",
+            "platform": "Visium",
+            "cell_types_image": "Vis_E15_BCC_stlearn.png",
+            "h_and_e_image": "Vis_E15_BCC_stlearn.png",
+            "data": "E15_BCC_stlearn.h5ad",
+        },
+        {
+            "condition": "SCC",
+            "platform": "Visium",
+            "cell_types_image": "Vis_E15_SCC_stlearn.png",
+            "h_and_e_image": "Vis_E15_SCC_stlearn.png",
+            "data": "E15_SCC_stlearn.h5ad",
+        }
+    ]
+}
 
-@router.post("/items", response_model=ExampleResponse)
-async def create_item(item: ExampleRequest):
-    global next_id
-    new_item = ExampleResponse(
-        id=next_id,
-        name=item.name,
-        email=item.email,
-        created_at=datetime.utcnow()
-    )
-    items_db.append(new_item)
-    next_id += 1
-    return new_item
 
-@router.get("/items/{item_id}", response_model=ExampleResponse)
-async def get_item(item_id: int):
-    for item in items_db:
-        if item.id == item_id:
-            return item
-    raise HTTPException(status_code=404, detail="Item not found")
+@router.get("/samples", response_model=List[SampleResponse])
+async def get_samples(request: fastapi.Request):
+    api_samples = [
+        SampleResponse(id = sample_id, **sample_data)
+        for sample_id, sample_data_list in samples.items()
+        for sample_data in sample_data_list
+    ]
+    for sample in api_samples:
+        sample.add_links(str(request.base_url))
+    return api_samples

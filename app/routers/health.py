@@ -14,5 +14,4 @@ async def health_check():
 
 @router.get("/ready")
 async def readiness_check():
-    # Add any readiness checks here (DB connections, etc.)
     return {"status": "ready"}
