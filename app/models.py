@@ -7,8 +7,8 @@ class HealthResponse(BaseModel):
     timestamp: datetime
     version: str
 
-_CONDITION = Literal["Melanoma", "BCC", "SCC"]
-_PLATFORM = Literal["Visium", "Xenium", "CosMX"]
+_CONDITION = Literal["melanoma", "bcc", "scc"]
+_PLATFORM = Literal["visium", "xenium", "cosmx"]
 
 class SampleResponse(BaseModel):
     id: str
@@ -22,7 +22,7 @@ class SampleResponse(BaseModel):
     def add_links(self, base_url: str):
         self.links = {
             "self": f"{base_url}samples/{self.id}",
-            "cell_type": f"{base_url}samples/{self.id}/cell_type",
-            "h_and_e": f"{base_url}samples/{self.id}/h_and_e",
-            "gene_expression": f"{base_url}samples/{self.id}?gene=gene_id",
+            "cell_type": f"{base_url}samples/{self.id}/{self.condition}/cell_type",
+            "h_and_e": f"{base_url}samples/{self.id}/{self.condition}/h_and_e",
+            "gene_expression": f"{base_url}samples/{self.id}/{self.condition}?gene=gene_id",
         }
