@@ -30,9 +30,9 @@ async def get_sample_image(
     condition: str,
     settings: Settings = fastapi.Depends(get_settings),
 ):
-    sample_file_name = get_sample_data(sample_id, condition)
-    if sample_file_name is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample_file_name['cell_types_image']}"
+    sample = get_sample_data(sample_id, condition)
+    if sample is not None:
+        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.cell_types_image}"
         return fastapi.responses.FileResponse(
             path=file_path,
             media_type="image/png",
@@ -57,9 +57,9 @@ async def get_all_genes(
     if limit > 500:
         limit = 500
 
-    sample_file_name = get_sample_data(sample_id, condition)
-    if sample_file_name is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample_file_name['data']}"
+    sample = get_sample_data(sample_id, condition)
+    if sample is not None:
+        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
         if hasattr(adata.X, 'toarray'):  # Handle sparse matrices
             expression_matrix = adata.X.toarray()
@@ -102,11 +102,12 @@ async def get_gene_expression(
     spot_size: float = 1,
     dpi: int = 120,
     settings: Settings = fastapi.Depends(get_settings), ):
-    sample_file_name = get_sample_data(sample_id, condition)
-    if sample_file_name is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample_file_name['data']}"
+    sample = get_sample_data(sample_id, condition)
+    if sample is not None:
+        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-        image_buffer = generate_spatial_plot(adata, gene, cmap, alpha, spot_size, dpi)
+        image_buffer = generate_spatial_plot(sample, adata, gene, cmap, alpha,
+                                             spot_size, dpi)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
             image_buffer,

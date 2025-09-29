@@ -14,8 +14,8 @@ class SampleResponse(BaseModel):
     id: str
     condition: _CONDITION
     platform: _PLATFORM
-    cell_types_image: str
-    h_and_e_image: str
+    cell_types_image: Optional[str] = None
+    h_and_e_image: Optional[str] = None
     data: str
     links: Optional[dict] = None
 

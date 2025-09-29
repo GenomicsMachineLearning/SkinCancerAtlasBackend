@@ -3,8 +3,10 @@ import io
 import matplotlib.pyplot as plt
 import scanpy as scanpy
 
+from app.models import SampleResponse
 
-def generate_spatial_plot(adata, gene_id, cmap, alpha, spot_size, dpi=200):
+
+def generate_spatial_plot(sample: SampleResponse, adata, gene_id, cmap, alpha, spot_size, dpi=200):
     """Generate a spatial plot for a given gene in AnnData object.
 
     Args:
@@ -31,6 +33,7 @@ def generate_spatial_plot(adata, gene_id, cmap, alpha, spot_size, dpi=200):
         show=False,
         cmap=cmap,
         size=spot_size,
+        title=f"Sample {sample.id}, Condition: {sample.condition}",
         ax=fig.gca()
     )
     buffer = io.BytesIO()
