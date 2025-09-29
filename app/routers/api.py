@@ -5,7 +5,7 @@ import numpy as numpy
 import pandas as pandas
 
 from app.plotting import generate_spatial_plot, generate_cell_type_plot
-from app.routers.measure import ExpressionMeasure
+from app.expression_measure import ExpressionMeasure
 from app.services.sample_service import get_sample_data, get_all_samples
 from app.core.config import Settings
 from app.core.dependencies import get_settings
@@ -54,15 +54,19 @@ async def get_cell_types(
     condition: str,
     cmap: str = 'inferno',
     alpha: float = 0.5,
-    spot_size: float = 1,
+    spot_size: float = 20,
+    legend_spot_size: float = 1,
     dpi: int = 120,
+    flip_x: bool = False,
+    flip_y: bool = False,
     settings: Settings = fastapi.Depends(get_settings), ):
     sample = get_sample_data(sample_id, condition)
     if sample is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
         image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,
-                                             spot_size, dpi)
+                                             spot_size, legend_spot_size, dpi,
+                                               flip_x, flip_y)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
             image_buffer,
@@ -143,15 +147,19 @@ async def get_gene_expression(
     gene: str,
     cmap: str = 'inferno',
     alpha: float = 0.5,
-    spot_size: float = 1,
+    spot_size: float = 20,
+    legend_spot_size: float = 1,
     dpi: int = 120,
+    flip_x: bool = False,
+    flip_y: bool = False,
     settings: Settings = fastapi.Depends(get_settings), ):
     sample = get_sample_data(sample_id, condition)
     if sample is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
         image_buffer = generate_spatial_plot(sample, adata, gene, cmap, alpha,
-                                             spot_size, dpi)
+                                             spot_size, legend_spot_size, dpi,
+                                             flip_x, flip_y)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
             image_buffer,

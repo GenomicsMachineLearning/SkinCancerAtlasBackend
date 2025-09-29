@@ -64,18 +64,32 @@ SAMPLES = {
         {
             "condition": "bcc",
             "platform": "visium",
-            "cell_types_image": "Vis_F21_BCC_stlearn.png",
             "h_and_e_image": "Vis_F21_BCC_stlearn.png",
             "data": "F21_BCC_stlearn.h5ad",
         },
         {
             "condition": "scc",
             "platform": "visium",
-            "cell_types_image": "Vis_F21_SCC_stlearn.png",
             "h_and_e_image": "Vis_F21_SCC_stlearn.png",
             "data": "F21_SCC_stlearn.h5ad",
+        },
+    ],
+    "6475-07FC": [
+        {
+            "condition": "melanoma",
+            "platform": "xenium",
+            "h_and_e_image": "Vis_F21_SCC_stlearn.png",
+            "data": "6475-07FC_labeled_xenium.h5ad",
         }
     ],
+    "9474-06BR": [
+        {
+            "condition": "melanoma",
+            "platform": "xenium",
+            "h_and_e_image": "Vis_F21_SCC_stlearn.png",
+            "data": "9474-06BR_labeled_xenium.h5ad",
+        }
+    ]
 }
 
 def get_sample_data(sample_id: str, condition: str) -> SampleResponse | None:

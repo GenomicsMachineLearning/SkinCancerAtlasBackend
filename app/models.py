@@ -2,18 +2,20 @@ from pydantic import BaseModel
 from typing import Literal, Optional
 from datetime import datetime
 
+from app.platform import Platform
+
+
 class HealthResponse(BaseModel):
     status: str
     timestamp: datetime
     version: str
 
 _CONDITION = Literal["melanoma", "bcc", "scc"]
-_PLATFORM = Literal["visium", "xenium", "cosmx"]
 
 class SampleResponse(BaseModel):
     id: str
     condition: _CONDITION
-    platform: _PLATFORM
+    platform: Platform
     cell_types_image: Optional[str] = None
     h_and_e_image: Optional[str] = None
     data: str
