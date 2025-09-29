@@ -21,7 +21,6 @@ SAMPLES = {
         {
             "condition": "melanoma",
             "platform": "visium",
-            "cell_types_image": "Vis_21031_Mel_stlearn.png",
             "h_and_e_image": "Vis_21031_Mel_stlearn.png",
             "data": "21031_Mel_stlearn.h5ad",
         }
@@ -37,14 +36,12 @@ SAMPLES = {
         {
             "condition": "scc",
             "platform": "visium",
-            "cell_types_image": "Vis_B18_SCC_stlearn.png",
             "h_and_e_image": "Vis_B18_SCC_stlearn.png",
             "data": "B18_SCC_stlearn.h5ad",
         },
         {
             "condition": "bcc",
             "platform": "visium",
-            "cell_types_image": "Vis_B18_BCC_stlearn.png",
             "h_and_e_image": "Vis_B18_BCC_stlearn.png",
             "data": "B18_BCC_stlearn.h5ad",
         },
@@ -53,14 +50,12 @@ SAMPLES = {
         {
             "condition": "bcc",
             "platform": "visium",
-            "cell_types_image": "Vis_E15_BCC_stlearn.png",
             "h_and_e_image": "Vis_E15_BCC_stlearn.png",
             "data": "E15_BCC_stlearn.h5ad",
         },
         {
             "condition": "scc",
             "platform": "visium",
-            "cell_types_image": "Vis_E15_SCC_stlearn.png",
             "h_and_e_image": "Vis_E15_SCC_stlearn.png",
             "data": "E15_SCC_stlearn.h5ad",
         }
