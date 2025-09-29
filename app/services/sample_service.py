@@ -3,6 +3,20 @@ from typing import Dict, List, Optional
 from app.models import SampleResponse
 
 SAMPLES = {
+    "6767": [
+        {
+            "condition": "melanoma",
+            "platform": "visium",
+            "data": "6767_Mel_stlearn.h5ad",
+        }
+    ],
+    "66487": [
+        {
+            "condition": "melanoma",
+            "platform": "visium",
+            "data": "66487_Mel_stlearn.h5ad",
+        }
+    ],
     "21031": [
         {
             "condition": "melanoma",
@@ -19,37 +33,21 @@ SAMPLES = {
             "data": "48974_Mel_stlearn.h5ad",
         }
     ],
-    "6767": [
-        {
-            "condition": "melanoma",
-            "platform": "visium",
-            "data": "6767_Mel_stlearn.h5ad",
-        }
-    ],
-    "66487": [
-        {
-            "condition": "melanoma",
-            "platform": "visium",
-            "data": "66487_Mel_stlearn.h5ad",
-        }
-    ],
     "B18": [
         {
             "condition": "scc",
             "platform": "visium",
             "cell_types_image": "Vis_B18_SCC_stlearn.png",
             "h_and_e_image": "Vis_B18_SCC_stlearn.png",
-            "data": "B18_BCC_stlearn.h5ad",
+            "data": "B18_SCC_stlearn.h5ad",
         },
-    ],
-    "F21": [
         {
             "condition": "bcc",
             "platform": "visium",
-            "cell_types_image": "Vis_B18_SCC_stlearn.png",
-            "h_and_e_image": "Vis_B18_SCC_stlearn.png",
+            "cell_types_image": "Vis_B18_BCC_stlearn.png",
+            "h_and_e_image": "Vis_B18_BCC_stlearn.png",
             "data": "B18_BCC_stlearn.h5ad",
-        }
+        },
     ],
     "E15": [
         {
@@ -66,7 +64,23 @@ SAMPLES = {
             "h_and_e_image": "Vis_E15_SCC_stlearn.png",
             "data": "E15_SCC_stlearn.h5ad",
         }
-    ]
+    ],
+    "F21": [
+        {
+            "condition": "bcc",
+            "platform": "visium",
+            "cell_types_image": "Vis_F21_BCC_stlearn.png",
+            "h_and_e_image": "Vis_F21_BCC_stlearn.png",
+            "data": "F21_BCC_stlearn.h5ad",
+        },
+        {
+            "condition": "scc",
+            "platform": "visium",
+            "cell_types_image": "Vis_F21_SCC_stlearn.png",
+            "h_and_e_image": "Vis_F21_SCC_stlearn.png",
+            "data": "F21_SCC_stlearn.h5ad",
+        }
+    ],
 }
 
 def get_sample_data(sample_id: str, condition: str) -> SampleResponse | None:
