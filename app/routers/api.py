@@ -1,72 +1,22 @@
 import fastapi as fastapi
 import typing as typing
-import pathlib as pathlib
-import matplotlib as matplotlib
-import matplotlib.pyplot as matplotlib_plt
-import io as io
 import anndata as anndata
-import scanpy as sc
+import numpy as numpy
+import pandas as pandas
 
-from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
-
+from app.plotting import generate_spatial_plot
+from app.services.sample_service import get_sample_data, get_all_samples
 from app.core.config import Settings
 from app.core.dependencies import get_settings
 from app.models import SampleResponse
 
 router = fastapi.APIRouter()
 
-samples = {
-    "21031": [
-        {
-            "condition": "melanoma",
-            "platform": "visium",
-            "cell_types_image": "Vis_21031_Mel_stlearn.png",
-            "h_and_e_image": "Vis_21031_Mel_stlearn.png",
-            "data": "21031_Mel_stlearn.h5ad",
-        }
-    ],
-    "B18": [
-        {
-            "condition": "scc",
-            "platform": "visium",
-            "cell_types_image": "Vis_B18_SCC_stlearn.png",
-            "h_and_e_image": "Vis_B18_SCC_stlearn.png",
-            "data": "B18_BCC_stlearn.h5ad",
-        },
-    ],
-    "F21": [
-        {
-            "condition": "bcc",
-            "platform": "visium",
-            "cell_types_image": "Vis_B18_SCC_stlearn.png",
-            "h_and_e_image": "Vis_B18_SCC_stlearn.png",
-            "data": "B18_BCC_stlearn.h5ad",
-        }
-    ],
-    "E15": [
-        {
-            "condition": "bcc",
-            "platform": "visium",
-            "cell_types_image": "Vis_E15_BCC_stlearn.png",
-            "h_and_e_image": "Vis_E15_BCC_stlearn.png",
-            "data": "E15_BCC_stlearn.h5ad",
-        },
-        {
-            "condition": "scc",
-            "platform": "visium",
-            "cell_types_image": "Vis_E15_SCC_stlearn.png",
-            "h_and_e_image": "Vis_E15_SCC_stlearn.png",
-            "data": "E15_SCC_stlearn.h5ad",
-        }
-    ]
-}
-
-
 @router.get("/samples", response_model=typing.List[SampleResponse])
 async def get_samples(request: fastapi.Request):
     api_samples = [
-        SampleResponse(id = sample_id, **sample_data)
-        for sample_id, sample_data_list in samples.items()
+        SampleResponse(id=sample_id, **sample_data)
+        for sample_id, sample_data_list in get_all_samples().items()
         for sample_data in sample_data_list
     ]
     for sample in api_samples:
@@ -80,12 +30,10 @@ async def get_sample_image(
     condition: str,
     settings: Settings = fastapi.Depends(get_settings),
 ):
-    items_from_sample = samples[sample_id]
-    sample_file_names = [item for item in items_from_sample if item["condition"] == condition]
-    sample_file_name = sample_file_names[0]
+    sample_file_name = get_sample_data(sample_id, condition)
     if sample_file_name is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample_file_name['cell_types_image']}"
-        return FileResponse(
+        return fastapi.responses.FileResponse(
             path=file_path,
             media_type="image/png",
             headers={
@@ -96,23 +44,41 @@ async def get_sample_image(
     else:
         raise fastapi.HTTPException(
             status_code=404,
-            detail=f"Image not found for sample {sample_id}"
+            detail=f"Sample not found {sample_id}, condition {condition}"
         )
 
+
 @router.get("/samples/{sample_id}/{condition}/genes")
-async def get_gene_expression(
+async def get_all_genes(
     sample_id: str,
     condition: str,
-    settings: Settings = fastapi.Depends(get_settings),):
-    items_from_sample = samples[sample_id]
-    sample_file_names = [item for item in items_from_sample if item["condition"] == condition]
-    sample_file_name = sample_file_names[0]
+    limit: int = 100,
+    settings: Settings = fastapi.Depends(get_settings), ):
+    if limit > 500:
+        limit = 500
+
+    sample_file_name = get_sample_data(sample_id, condition)
     if sample_file_name is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample_file_name['data']}"
         adata = anndata.read_h5ad(file_path)
-        genes = adata.var.index.tolist()
-        return JSONResponse(
-            genes,
+        if hasattr(adata.X, 'toarray'):  # Handle sparse matrices
+            expression_matrix = adata.X.toarray()
+        else:
+            expression_matrix = adata.X
+
+        # Calculate mean expression per gene (across all cells/spots)
+        mean_expression = numpy.mean(expression_matrix, axis=0)
+        gene_expression_df = pandas.DataFrame({
+            'gene': adata.var.index,
+            'mean_expression': mean_expression
+        })
+
+        # Sort by mean expression (descending - highest expression first)
+        gene_expression_df = gene_expression_df.sort_values('mean_expression',
+                                                            ascending=False)
+        ordered_genes = gene_expression_df['gene'][0:limit].tolist()
+        return fastapi.responses.JSONResponse(
+            ordered_genes,
             headers={
                 "Content-Type": "application/json",
                 "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
@@ -122,28 +88,27 @@ async def get_gene_expression(
     else:
         raise fastapi.HTTPException(
             status_code=404,
-            detail=f"Sample not found {sample_id}"
+            detail=f"Sample not found {sample_id}, condition {condition}"
         )
+
 
 @router.get("/samples/{sample_id}/{condition}/genes/{gene}")
 async def get_gene_expression(
     sample_id: str,
     condition: str,
     gene: str,
+    cmap: str = 'inferno',
+    alpha: float = 0.5,
     spot_size: float = 1,
-    settings: Settings = fastapi.Depends(get_settings),):
-    print(sample_id)
-    print(condition)
-    print(gene)
-    items_from_sample = samples[sample_id]
-    sample_file_names = [item for item in items_from_sample if item["condition"] == condition]
-    sample_file_name = sample_file_names[0]
+    dpi: int = 120,
+    settings: Settings = fastapi.Depends(get_settings), ):
+    sample_file_name = get_sample_data(sample_id, condition)
     if sample_file_name is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample_file_name['data']}"
         adata = anndata.read_h5ad(file_path)
-        image_buffer = generate_spatial_plot(adata, gene, spot_size)
+        image_buffer = generate_spatial_plot(adata, gene, cmap, alpha, spot_size, dpi)
         image_buffer.seek(0)
-        return StreamingResponse(
+        return fastapi.responses.StreamingResponse(
             image_buffer,
             media_type="image/png",
             headers={
@@ -154,29 +119,5 @@ async def get_gene_expression(
     else:
         raise fastapi.HTTPException(
             status_code=404,
-            detail=f"Image not found for sample {sample_id}"
+            detail=f"Sample not found {sample_id}, condition {condition}"
         )
-
-
-def generate_spatial_plot(adata, gene_id, spot_size):
-    matplotlib_plt.clf()
-    matplotlib_plt.close('all')
-
-    fig = matplotlib_plt.figure(figsize=(6.4, 6.4))
-    sc.pl.spatial(
-        adata,
-        alpha_img=0.5,
-        color=[gene_id],
-        show=False,
-        cmap='inferno',
-        size=spot_size,
-        ax=fig.gca()
-    )
-    buffer = io.BytesIO()
-    fig.savefig(buffer, format='png', bbox_inches='tight')
-
-    content = buffer.getvalue()
-    buffer.close()
-    matplotlib_plt.close(fig)
-    new_buffer = io.BytesIO(content)
-    return new_buffer
