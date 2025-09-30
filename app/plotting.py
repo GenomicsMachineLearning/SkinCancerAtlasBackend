@@ -1,7 +1,7 @@
-# app/plotting.py
 import io
 import matplotlib.pyplot as plt
 import scanpy as scanpy
+from scanpy._utils import _empty
 
 from app.models import SampleResponse
 from app.platform import Platform
@@ -56,7 +56,8 @@ def generate_spatial_plot(sample: SampleResponse, adata, gene_id, cmap, alpha, s
     return new_buffer
 
 def generate_cell_type_plot(sample: SampleResponse, adata, cmap, alpha, spot_size=20,
-                            legend_spot_size=1, dpi=200, flip_x=False, flip_y=False):
+                            library_id=None, legend_spot_size=1, dpi=200, flip_x=False,
+                            flip_y=False):
     """Generate a spatial plot for a given gene in AnnData object.
 
     Args:
@@ -70,6 +71,9 @@ def generate_cell_type_plot(sample: SampleResponse, adata, cmap, alpha, spot_siz
     Returns:
         io.BytesIO: Buffer containing PNG image data
     """
+    if library_id is None:
+        library_id = _empty
+
     plt.clf()
     plt.close('all')
 
@@ -91,7 +95,7 @@ def generate_cell_type_plot(sample: SampleResponse, adata, cmap, alpha, spot_siz
         color=cell_type_column,
         show=False,
         cmap=cmap,
-        library_id='5',
+        library_id=library_id,
         spot_size=spot_size,
         size=legend_spot_size,
         title="",

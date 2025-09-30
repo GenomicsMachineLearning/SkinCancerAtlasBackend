@@ -19,6 +19,7 @@ class SampleResponse(BaseModel):
     cell_types_image: Optional[str] = None
     h_and_e_image: Optional[str] = None
     data: str
+    render_params: dict = None
     links: Optional[dict] = None
 
     def add_links(self, base_url: str):

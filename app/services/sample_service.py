@@ -8,6 +8,10 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "visium",
             "data": "6767_Mel_stlearn.h5ad",
+            "render_params": {
+                "spot_size": "100",
+                "flip_y": "true",
+            },
         }
     ],
     "66487": [
@@ -15,6 +19,10 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "visium",
             "data": "66487_Mel_stlearn.h5ad",
+            "render_params": {
+                "spot_size": "125",
+                "flip_y": "true"
+            },
         },
         {
             "condition": "melanoma",
@@ -27,6 +35,9 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "visium",
             "data": "21031_Mel_stlearn.h5ad",
+            "render_params": {
+                "spot_size": "125",
+            },
         }
     ],
     "48974": [
@@ -34,6 +45,9 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "visium",
             "data": "48974_Mel_stlearn.h5ad",
+            "render_params": {
+                "spot_size": "125",
+            },
         }
     ],
     "B18": [
@@ -41,11 +55,17 @@ SAMPLES = {
             "condition": "scc",
             "platform": "visium",
             "data": "B18_SCC_stlearn.h5ad",
+            "render_params": {
+                "spot_size": "20",
+            },
         },
         {
             "condition": "bcc",
             "platform": "visium",
             "data": "B18_BCC_stlearn.h5ad",
+            "render_params": {
+                "spot_size": "75",
+            },
         },
         {
             "condition": "scc",
@@ -94,6 +114,9 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "xenium",
             "data": "9474-06BR_labeled_xenium.h5ad",
+            "render_params": {
+                "flip_y": "true",
+            },
         }
     ],
     "23346-10SP": [
@@ -101,6 +124,9 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "xenium",
             "data": "23346-10SP_labeled_xenium.h5ad",
+            "render_params": {
+                "flip_y": "true",
+            },
         }
     ],
     "30037-07BR": [
@@ -108,6 +134,9 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "xenium",
             "data": "30037-07BR_labeled_xenium.h5ad",
+            "render_params": {
+                "flip_y": "true",
+            },
         },
     ],
     "98594-09PY": [
@@ -115,6 +144,9 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "xenium",
             "data": "98594-09PY_labeled_xenium.h5ad",
+            "render_params": {
+                "flip_y": "true",
+            },
         }
     ],
     "48974-2B": [
@@ -150,6 +182,9 @@ SAMPLES = {
             "condition": "bcc",
             "platform": "cosmx",
             "data": "D12_cutoff50_cosmx_stlearn.h5ad",
+            "render_params": {
+                "library_id": "1",
+            },
         }
     ]
 }

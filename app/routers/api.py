@@ -1,8 +1,11 @@
+from inspect import Parameter
+
 import fastapi as fastapi
 import typing as typing
 import anndata as anndata
 import numpy as numpy
 import pandas as pandas
+from scanpy._utils import _empty
 
 from app.plotting import generate_spatial_plot, generate_cell_type_plot
 from app.expression_measure import ExpressionMeasure
@@ -12,6 +15,7 @@ from app.core.dependencies import get_settings
 from app.models import SampleResponse
 
 router = fastapi.APIRouter()
+
 
 @router.get("/samples", response_model=typing.List[SampleResponse])
 async def get_samples(request: fastapi.Request):
@@ -48,6 +52,7 @@ async def get_h_and_e_image(
             detail=f"Sample not found {sample_id}, condition {condition}"
         )
 
+
 @router.get("/samples/{sample_id}/{condition}/{platform}/cell_type")
 async def get_cell_types(
     sample_id: str,
@@ -56,6 +61,7 @@ async def get_cell_types(
     cmap: str = 'inferno',
     alpha: float = 0.5,
     spot_size: float = 20,
+    library_id: str | None = None,
     legend_spot_size: float = 1,
     dpi: int = 120,
     flip_x: bool = False,
@@ -66,8 +72,8 @@ async def get_cell_types(
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
         image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,
-                                             spot_size, legend_spot_size, dpi,
-                                               flip_x, flip_y)
+                                               spot_size, library_id, legend_spot_size,
+                                               dpi, flip_x, flip_y)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
             image_buffer,
@@ -82,6 +88,7 @@ async def get_cell_types(
             status_code=404,
             detail=f"Sample not found {sample_id}, condition {condition}"
         )
+
 
 @router.get("/samples/{sample_id}/{condition}/{platform}/genes")
 async def get_all_genes(
