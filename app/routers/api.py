@@ -158,6 +158,7 @@ async def get_gene_expression(
     cmap: str = 'inferno',
     alpha: float = 0.5,
     spot_size: float = 20,
+    library_id: str | None = None,
     legend_spot_size: float = 1,
     dpi: int = 120,
     flip_x: bool = False,
@@ -167,9 +168,14 @@ async def get_gene_expression(
     if sample is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-        image_buffer = generate_spatial_plot(sample, adata, gene, cmap, alpha,
-                                             spot_size, legend_spot_size, dpi,
-                                             flip_x, flip_y)
+
+        image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,
+                                               spot_size, library_id, legend_spot_size,
+                                               dpi, flip_x, flip_y)
+
+        image_buffer = generate_spatial_plot(adata, gene, cmap, alpha,
+                                             library_id, spot_size, legend_spot_size,
+                                             dpi, flip_x, flip_y)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
             image_buffer,

@@ -7,7 +7,7 @@ from app.models import SampleResponse
 from app.platform import Platform
 
 
-def generate_spatial_plot(sample: SampleResponse, adata, gene_id, cmap, alpha, spot_size=20,
+def generate_spatial_plot(adata, gene_id, cmap, alpha, library_id=None, spot_size=20,
                             legend_spot_size=1, dpi=200, flip_x=False, flip_y=False):
     """Generate a spatial plot for a given gene in AnnData object.
 
@@ -21,6 +21,9 @@ def generate_spatial_plot(sample: SampleResponse, adata, gene_id, cmap, alpha, s
     Returns:
         io.BytesIO: Buffer containing PNG image data
     """
+    if library_id is None:
+        library_id = _empty
+
     plt.clf()
     plt.close('all')
 
@@ -35,11 +38,26 @@ def generate_spatial_plot(sample: SampleResponse, adata, gene_id, cmap, alpha, s
         color=[gene_id],
         show=False,
         cmap=cmap,
+        library_id=library_id,
         spot_size=spot_size,
         size=legend_spot_size,
         title="",
         ax=ax
     )
+
+    # Make the colorbar more compact
+    cbar = ax.collections[0].colorbar
+    if cbar is not None:
+        cbar.ax.tick_params(labelsize=8)
+        cbar.ax.yaxis.set_major_locator(plt.MaxNLocator(5))
+        ax_pos = ax.get_position()
+        cbar_pos = cbar.ax.get_position()
+        cbar.ax.set_position([
+            cbar_pos.x0,
+            ax_pos.y0,
+            cbar_pos.width * 0.5,
+            ax_pos.height
+        ])
 
     if flip_x:
         ax.invert_xaxis()

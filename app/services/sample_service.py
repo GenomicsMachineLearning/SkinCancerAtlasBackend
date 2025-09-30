@@ -9,7 +9,7 @@ SAMPLES = {
             "platform": "visium",
             "data": "6767_Mel_stlearn.h5ad",
             "render_params": {
-                "spot_size": "100",
+                "spot_size": "125",
                 "flip_y": "true",
             },
         }
@@ -28,6 +28,10 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "cosmx",
             "data": "66487-1A_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "21031": [
@@ -71,11 +75,19 @@ SAMPLES = {
             "condition": "scc",
             "platform": "cosmx",
             "data": "B18_SCC_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         },
         {
             "condition": "bcc",
             "platform": "cosmx",
             "data": "B18_BCC_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "E15": [
@@ -107,6 +119,10 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "xenium",
             "data": "6475-07FC_labeled_xenium.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "9474-06BR": [
@@ -116,6 +132,8 @@ SAMPLES = {
             "data": "9474-06BR_labeled_xenium.h5ad",
             "render_params": {
                 "flip_y": "true",
+                "spot_size": 50,
+                "dpi": 150,
             },
         }
     ],
@@ -126,6 +144,8 @@ SAMPLES = {
             "data": "23346-10SP_labeled_xenium.h5ad",
             "render_params": {
                 "flip_y": "true",
+                "spot_size": 50,
+                "dpi": 150,
             },
         }
     ],
@@ -136,6 +156,8 @@ SAMPLES = {
             "data": "30037-07BR_labeled_xenium.h5ad",
             "render_params": {
                 "flip_y": "true",
+                "spot_size": 50,
+                "dpi": 150,
             },
         },
     ],
@@ -146,6 +168,8 @@ SAMPLES = {
             "data": "98594-09PY_labeled_xenium.h5ad",
             "render_params": {
                 "flip_y": "true",
+                "spot_size": 50,
+                "dpi": 150,
             },
         }
     ],
@@ -154,6 +178,10 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "cosmx",
             "data": "48974-2B_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "67667": [
@@ -161,6 +189,10 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "cosmx",
             "data": "6747-085P_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "P13": [
@@ -168,6 +200,10 @@ SAMPLES = {
             "condition": "scc",
             "platform": "cosmx",
             "data": "P13_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "P30": [
@@ -175,6 +211,10 @@ SAMPLES = {
             "condition": "scc",
             "platform": "cosmx",
             "data": "P30_cutoff50_cosmx_clean.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "D12": [
@@ -184,6 +224,8 @@ SAMPLES = {
             "data": "D12_cutoff50_cosmx_stlearn.h5ad",
             "render_params": {
                 "library_id": "1",
+                "spot_size": 50,
+                "dpi": 150,
             },
         }
     ]
