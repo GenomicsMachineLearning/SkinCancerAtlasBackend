@@ -37,7 +37,7 @@ def generate_spatial_plot(sample: SampleResponse, adata, gene_id, cmap, alpha, s
         cmap=cmap,
         spot_size=spot_size,
         size=legend_spot_size,
-        title=f"Sample {sample.id}, Condition: {sample.condition}, Gene: {gene_id}",
+        title="",
         ax=ax
     )
 
@@ -78,7 +78,7 @@ def generate_cell_type_plot(sample: SampleResponse, adata, cmap, alpha, spot_siz
     elif sample.platform == Platform.xenium:
         cell_type_column = "predicted.id"
     else:
-        cell_type_column = "cell.type"
+        cell_type_column = "cell_type"
 
     if dpi > 300:
         dpi = 300
@@ -93,7 +93,7 @@ def generate_cell_type_plot(sample: SampleResponse, adata, cmap, alpha, spot_siz
         cmap=cmap,
         spot_size=spot_size,
         size=legend_spot_size,
-        title=f"Sample {sample.id}, Condition: {sample.condition}",
+        title="",
         ax=ax
     )
 
