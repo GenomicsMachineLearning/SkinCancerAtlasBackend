@@ -217,18 +217,6 @@ SAMPLES = {
             }
         }
     ],
-    "D12": [
-        {
-            "condition": "bcc",
-            "platform": "cosmx",
-            "data": "D12_cutoff50_cosmx_stlearn.h5ad",
-            "render_params": {
-                "library_id": "1",
-                "spot_size": 50,
-                "dpi": 150,
-            },
-        }
-    ]
 }
 
 
