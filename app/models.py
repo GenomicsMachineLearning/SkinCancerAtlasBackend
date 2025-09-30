@@ -26,5 +26,5 @@ class SampleResponse(BaseModel):
             "self": f"{base_url}samples/{self.id}",
             "cell_type": f"{base_url}samples/{self.id}/{self.condition}/cell_type",
             "h_and_e": f"{base_url}samples/{self.id}/{self.condition}/h_and_e",
-            "gene_expression": f"{base_url}samples/{self.id}/{self.condition}?gene=gene_id",
+            "gene_expression": f"{base_url}samples/{self.id}/{self.condition}/genes",
         }
