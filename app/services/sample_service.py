@@ -155,11 +155,11 @@ SAMPLES = {
 }
 
 
-def get_sample_data(sample_id: str, condition: str) -> SampleResponse | None:
+def get_sample_data(sample_id: str, condition: str, platform: str) -> SampleResponse | None:
     if sample_id in SAMPLES:
         items_from_sample = SAMPLES[sample_id]
         sample_file_names = [item for item in items_from_sample if
-                             item["condition"] == condition]
+                             item["condition"] == condition and item["platform"] == platform]
         if sample_file_names:
             sample_dict = sample_file_names[0]
             return SampleResponse(id=sample_id, **sample_dict)

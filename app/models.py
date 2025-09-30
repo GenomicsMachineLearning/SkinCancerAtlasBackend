@@ -24,7 +24,7 @@ class SampleResponse(BaseModel):
     def add_links(self, base_url: str):
         self.links = {
             "self": f"{base_url}samples/{self.id}",
-            "cell_type": f"{base_url}samples/{self.id}/{self.condition}/cell_type",
+            "cell_type": f"{base_url}samples/{self.id}/{self.condition}/{self.platform}/cell_type",
             "h_and_e": f"{base_url}samples/{self.id}/{self.condition}/h_and_e",
-            "gene_expression": f"{base_url}samples/{self.id}/{self.condition}/genes",
+            "gene_expression": f"{base_url}samples/{self.id}/{self.condition}/{self.platform}/genes",
         }

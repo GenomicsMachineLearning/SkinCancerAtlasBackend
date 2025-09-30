@@ -48,10 +48,11 @@ async def get_h_and_e_image(
             detail=f"Sample not found {sample_id}, condition {condition}"
         )
 
-@router.get("/samples/{sample_id}/{condition}/cell_type")
+@router.get("/samples/{sample_id}/{condition}/{platform}/cell_type")
 async def get_cell_types(
     sample_id: str,
     condition: str,
+    platform: str,
     cmap: str = 'inferno',
     alpha: float = 0.5,
     spot_size: float = 20,
@@ -60,7 +61,7 @@ async def get_cell_types(
     flip_x: bool = False,
     flip_y: bool = False,
     settings: Settings = fastapi.Depends(get_settings), ):
-    sample = get_sample_data(sample_id, condition)
+    sample = get_sample_data(sample_id, condition, platform)
     if sample is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
@@ -82,17 +83,18 @@ async def get_cell_types(
             detail=f"Sample not found {sample_id}, condition {condition}"
         )
 
-@router.get("/samples/{sample_id}/{condition}/genes")
+@router.get("/samples/{sample_id}/{condition}/{platform}/genes")
 async def get_all_genes(
     sample_id: str,
     condition: str,
+    platform: str,
     measure: ExpressionMeasure = "mean",
     limit: int = 100,
     settings: Settings = fastapi.Depends(get_settings), ):
     if limit > 500:
         limit = 500
 
-    sample = get_sample_data(sample_id, condition)
+    sample = get_sample_data(sample_id, condition, platform)
     if sample is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
@@ -140,10 +142,11 @@ async def get_all_genes(
         )
 
 
-@router.get("/samples/{sample_id}/{condition}/genes/{gene}")
+@router.get("/samples/{sample_id}/{condition}/{platform}/genes/{gene}")
 async def get_gene_expression(
     sample_id: str,
     condition: str,
+    platform: str,
     gene: str,
     cmap: str = 'inferno',
     alpha: float = 0.5,
@@ -153,7 +156,7 @@ async def get_gene_expression(
     flip_x: bool = False,
     flip_y: bool = False,
     settings: Settings = fastapi.Depends(get_settings), ):
-    sample = get_sample_data(sample_id, condition)
+    sample = get_sample_data(sample_id, condition, platform)
     if sample is not None:
         file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)

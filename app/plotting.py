@@ -91,6 +91,7 @@ def generate_cell_type_plot(sample: SampleResponse, adata, cmap, alpha, spot_siz
         color=cell_type_column,
         show=False,
         cmap=cmap,
+        library_id='5',
         spot_size=spot_size,
         size=legend_spot_size,
         title="",
