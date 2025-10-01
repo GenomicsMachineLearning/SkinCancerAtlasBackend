@@ -32,4 +32,8 @@ COPY lambda_handler.py .
 # Lambda runtime interface client
 RUN pip install awslambdaric
 
+# Copy application code
+COPY app/ ./app/
+COPY lambda_handler.py .
+
 CMD ["lambda_handler.lambda_handler"]
