@@ -16,14 +16,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/task
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.3 /lambda-adapter /opt/extensions/lambda-adapter
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy application code and lambda handler.
 COPY app/ ./app/
+COPY lambda_handler.py .
 
 # Use Magnum
-CMD ["lambda_handler.lambda_handler"]
+CMD ["lambda_handler.handler"]
