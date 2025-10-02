@@ -12,22 +12,14 @@ RUN apt-get update && apt-get install -y \
     tar \
     unzip \
     wget \
-    zlib1g
+    zlib1g \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/task
-
-# Install system dependencies if needed
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
-
-# Copy application code
-COPY app/ ./app/
-COPY lambda_handler.py .
 
 # Lambda runtime interface client
 RUN pip install awslambdaric
@@ -36,4 +28,5 @@ RUN pip install awslambdaric
 COPY app/ ./app/
 COPY lambda_handler.py .
 
+ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 CMD ["lambda_handler.lambda_handler"]

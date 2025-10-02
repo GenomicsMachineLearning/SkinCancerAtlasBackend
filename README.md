@@ -39,8 +39,24 @@ We assume you already have conda installed.
   * Add ```$HOME/.docker/bin``` to you PATH.
 
 * Running server:
-  * ```docker build -t myapp-local -f Dockerfile-local .```
-  * ```docker run -p 8000:8000 myapp-local```
+  * ```docker build -f Dockerfile.local -t my-fastapi-lambda .```
+  * ```docker run --rm -p 9000:8080 my-fastapi-lambda```
+
+* Send a test request:
+```commandline
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "resource": "/samples",
+  "path": "/samples",
+  "httpMethod": "GET",
+  "headers": {
+    "Accept": "application/json",
+    "Host": "localhost"
+  },
+  "requestContext": {}
+}'
+```
 
 ## Other Information
 
