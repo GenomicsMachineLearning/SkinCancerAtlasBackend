@@ -37,7 +37,7 @@ async def get_h_and_e_image(
 ):
     sample = get_sample_data(sample_id, condition)
     if sample is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.h_and_e_image}"
+        file_path = settings.DATA_STORAGE_PATH / f"{sample.h_and_e_image}"
         return fastapi.responses.FileResponse(
             path=file_path,
             media_type="image/png",
@@ -69,7 +69,7 @@ async def get_cell_types(
     settings: Settings = fastapi.Depends(get_settings), ):
     sample = get_sample_data(sample_id, condition, platform)
     if sample is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
+        file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
         image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,
                                                spot_size, library_id, legend_spot_size,
@@ -103,7 +103,7 @@ async def get_all_genes(
 
     sample = get_sample_data(sample_id, condition, platform)
     if sample is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
+        file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
         if hasattr(adata.X, 'toarray'):  # Handle sparse matrices
             expression_matrix = adata.X.toarray()
@@ -166,7 +166,7 @@ async def get_gene_expression(
     settings: Settings = fastapi.Depends(get_settings), ):
     sample = get_sample_data(sample_id, condition, platform)
     if sample is not None:
-        file_path = settings.IMAGE_STORAGE_PATH / f"{sample.data}"
+        file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
 
         image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,

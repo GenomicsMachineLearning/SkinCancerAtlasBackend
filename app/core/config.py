@@ -15,7 +15,10 @@ class Settings(BaseSettings):
     # AWS
     AWS_REGION: str = "ap-southeast-2"
 
-    IMAGE_STORAGE_PATH: pathlib.Path = pathlib.Path("./data")
+    if ENVIRONMENT == "production":
+        DATA_STORAGE_PATH: pathlib.Path = pathlib.Path("/mnt/data")
+    else:
+        DATA_STORAGE_PATH: pathlib.Path = pathlib.Path("./data")
 
     class Config:
         env_file = ".env"
