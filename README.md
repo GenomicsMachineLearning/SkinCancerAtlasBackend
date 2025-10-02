@@ -38,15 +38,13 @@ We assume you already have conda installed.
   * https://docs.docker.com/desktop/install/windows-install/
   * Add ```$HOME/.docker/bin``` to you PATH.
 
-* Running server:
-  * ```docker build -f Dockerfile.local -t my-fastapi-lambda .```
-  * ```docker run --rm -p 9000:8080 my-fastapi-lambda```
+* Running server locally:
+  * ```docker build -f Dockerfile -t my-fastapi-lambda .```
+  * ```docker run -p 8000:8000 my-fastapi-app```
 
-* Send a test request:
-```commandline
-curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
-  -H "Content-Type: application/json" \
-  -d '{
+* When deploying to production you can test it with (in the AWS console for example):
+```json
+{
   "resource": "/samples",
   "path": "/samples",
   "httpMethod": "GET",
@@ -55,7 +53,7 @@ curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
     "Host": "localhost"
   },
   "requestContext": {}
-}'
+}
 ```
 
 ## Other Information

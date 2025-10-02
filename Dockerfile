@@ -16,17 +16,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/task
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.3 /lambda-adapter /opt/extensions/lambda-adapter
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
-
-# Lambda runtime interface client
-RUN pip install awslambdaric
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app/ ./app/
-COPY lambda_handler.py .
 
-ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
-CMD ["lambda_handler.lambda_handler"]
+ENV AWS_LWA_INVOKE_MODE=response_stream
+ENV AWS_LWA_PORT=8000
+
+# Use uvicorn to serve FastAPI
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
