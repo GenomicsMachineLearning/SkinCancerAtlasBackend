@@ -27,4 +27,4 @@ COPY app/ ./app/
 COPY lambda_handler.py .
 
 # Use Magnum
-CMD ["python", "-m", "awslambdaric", "lambda_handler.handler"]
+CMD ["python", "-m", "awslambdaric", "lambda_handler.lambda_handler"]

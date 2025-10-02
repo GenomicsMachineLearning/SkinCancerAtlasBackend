@@ -4,9 +4,9 @@ from app.main import app
 # Create the Mangum handler
 handler = Mangum(app, lifespan="off")
 
-def handler(event, context):
+def lambda_handler(event, context):
     # Call the Mangum handler
-    response = base_handler(event, context)
+    response = handler(event, context)
 
     # Ensure headers dict exists
     if 'headers' not in response:
