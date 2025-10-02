@@ -25,8 +25,5 @@ RUN python -m pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app/ ./app/
 
-ENV AWS_LWA_INVOKE_MODE=response_stream
-ENV AWS_LWA_PORT=8000
-
-# Use uvicorn to serve FastAPI
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+# Use Magnum
+CMD ["lambda_handler.lambda_handler"]
