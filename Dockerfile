@@ -20,10 +20,11 @@ WORKDIR /var/task
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN pip install awslambdaric
 
 # Copy application code and lambda handler.
 COPY app/ ./app/
 COPY lambda_handler.py .
 
 # Use Magnum
-CMD ["lambda_handler.handler"]
+CMD ["python", "-m", "awslambdaric", "lambda_handler.handler"]
