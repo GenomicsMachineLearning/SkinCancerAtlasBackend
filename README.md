@@ -39,8 +39,9 @@ We assume you already have conda installed.
   * Add ```$HOME/.docker/bin``` to you PATH.
 
 * Running server locally:
-  * ```docker build -f Dockerfile -t my-fastapi-lambda .```
+  * ```docker build -f Dockerfile.local -t my-fastapi-lambda .```
   * ```docker run -p 8000:8000 my-fastapi-app```
+* You will need to download the data and place it in the ./data directory.
 
 * When deploying to production you can test it with (in the AWS console for example):
 ```json
@@ -50,9 +51,11 @@ We assume you already have conda installed.
   "httpMethod": "GET",
   "headers": {
     "Accept": "application/json",
-    "Host": "localhost"
+    "Content-Type": "application/json"
   },
-  "requestContext": {}
+  "requestContext": {
+    "httpMethod": "GET"
+  }
 }
 ```
 
