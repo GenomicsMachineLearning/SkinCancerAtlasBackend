@@ -46,8 +46,8 @@ class ScRnaSeq(BaseModel):
 
     def add_links(self, base_url: str):
         self.links = {
-            "cell_type": f"{base_url}samples/{self.id}/cell_type",
-            "gene_expression": f"{base_url}samples/{self.id}/genes",
+            "cell_type": f"{base_url}scrnaseq/{self.id}/cell_type",
+            "gene_expression": f"{base_url}scrnaseq/{self.id}/genes",
         }
 
 class ScRnaSeqResponse(BaseModel):

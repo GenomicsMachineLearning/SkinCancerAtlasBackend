@@ -6,13 +6,14 @@ import anndata as anndata
 import numpy as numpy
 import pandas as pandas
 
-from app.plotting import generate_spatial_plot, generate_cell_type_plot
+from app.plotting import generate_spatial_plot, generate_sample_cell_type_plot, \
+    generate_cell_type_plot, generate_umap
 from app.expression_measure import ExpressionMeasure
 from app.services.sample_service import get_sample_data, get_all_samples
 from app.core.config import Settings
 from app.core.dependencies import get_settings
 from app.models import SampleResponse, ScRnaSeqResponse, ScRnaSeq
-from app.services.scrnaseq_service import get_all_scrnaseq
+from app.services.scrnaseq_service import get_all_scrnaseq, get_scrnaseq_data
 
 router = fastapi.APIRouter()
 
@@ -97,6 +98,35 @@ async def get_cell_types(
         raise fastapi.HTTPException(
             status_code=404,
             detail=f"Sample not found {sample_id}, condition {condition}"
+        )
+
+@router.get("/scrnaseq/{scrnaseq_id}/cell_type")
+async def get_cell_types(
+    scrnaseq_id: str,
+    spot_size: float = 5,
+    legend_spot_size: float = 80,
+    dpi: int = 120,
+    level: str = 'Level1',
+    settings: Settings = fastapi.Depends(get_settings), ):
+    scrnaseq = get_scrnaseq_data(scrnaseq_id)
+    if scrnaseq is not None:
+        file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
+        adata = anndata.read_h5ad(file_path)
+        print(f"Read {file_path}")
+        image_buffer = generate_umap(adata, spot_size, legend_spot_size, dpi, level)
+        image_buffer.seek(0)
+        return fastapi.responses.StreamingResponse(
+            image_buffer,
+            media_type="image/png",
+            headers={
+                "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
+                "X-ScRnaSeq-ID": scrnaseq_id,
+            }
+        )
+    else:
+        raise fastapi.HTTPException(
+            status_code=404,
+            detail=f"ScRnaSeq not found {scrnaseq_id}"
         )
 
 
