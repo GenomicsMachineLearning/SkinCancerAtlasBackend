@@ -29,11 +29,13 @@ async def get_samples(request: fastapi.Request):
     return api_samples
 
 @router.get("/scrnaseq", response_model=typing.List[ScRnaSeqResponse])
-async def get_scrnaseq():
+async def get_scrnaseq(request: fastapi.Request):
     api_scrnaseqs = [
         ScRnaSeq(**scrnaseq_data)
         for scrnaseq_data in get_all_scrnaseq()
     ]
+    for rnaseq in api_scrnaseqs:
+        rnaseq.add_links(str(request.base_url))
     return api_scrnaseqs
 
 
