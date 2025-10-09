@@ -5,14 +5,14 @@ import typing as typing
 import anndata as anndata
 import numpy as numpy
 import pandas as pandas
-from scanpy._utils import _empty
 
 from app.plotting import generate_spatial_plot, generate_cell_type_plot
 from app.expression_measure import ExpressionMeasure
 from app.services.sample_service import get_sample_data, get_all_samples
 from app.core.config import Settings
 from app.core.dependencies import get_settings
-from app.models import SampleResponse
+from app.models import SampleResponse, ScRnaSeqResponse, ScRnaSeq
+from app.services.scrnaseq_service import get_all_scrnaseq
 
 router = fastapi.APIRouter()
 
@@ -27,6 +27,14 @@ async def get_samples(request: fastapi.Request):
     for sample in api_samples:
         sample.add_links(str(request.base_url))
     return api_samples
+
+@router.get("/scrnaseq", response_model=typing.List[ScRnaSeqResponse])
+async def get_scrnaseq():
+    api_scrnaseqs = [
+        ScRnaSeq(**scrnaseq_data)
+        for scrnaseq_data in get_all_scrnaseq()
+    ]
+    return api_scrnaseqs
 
 
 @router.get("/samples/{sample_id}/{condition}/h_and_e")
@@ -168,10 +176,6 @@ async def get_gene_expression(
     if sample is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-
-        image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,
-                                               spot_size, library_id, legend_spot_size,
-                                               dpi, flip_x, flip_y)
 
         image_buffer = generate_spatial_plot(adata, gene, cmap, alpha,
                                              library_id, spot_size, legend_spot_size,

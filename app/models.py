@@ -12,13 +12,21 @@ class HealthResponse(BaseModel):
 
 _CONDITION = Literal["melanoma", "bcc", "scc"]
 
+
+class Sample(BaseModel):
+    id: str
+    condition: _CONDITION
+    platform: Platform
+    data: str
+    cell_types_image: Optional[str] = None
+    h_and_e_image: Optional[str] = None
+    render_params: dict = None
+    links: Optional[dict] = None
+
 class SampleResponse(BaseModel):
     id: str
     condition: _CONDITION
     platform: Platform
-    cell_types_image: Optional[str] = None
-    h_and_e_image: Optional[str] = None
-    data: str
     render_params: dict = None
     links: Optional[dict] = None
 
@@ -29,3 +37,12 @@ class SampleResponse(BaseModel):
             "h_and_e": f"{base_url}samples/{self.id}/{self.condition}/h_and_e",
             "gene_expression": f"{base_url}samples/{self.id}/{self.condition}/{self.platform}/genes",
         }
+
+class ScRnaSeq(BaseModel):
+    id: str
+    condition: str
+    data: str
+
+class ScRnaSeqResponse(BaseModel):
+    id: str
+    condition: str

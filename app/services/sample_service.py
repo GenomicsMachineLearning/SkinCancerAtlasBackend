@@ -1,6 +1,6 @@
-from typing import Dict, List, Optional
+from typing import Dict
 
-from app.models import SampleResponse
+from app.models import SampleResponse, Sample
 
 SAMPLES = {
     "6767": [
@@ -220,14 +220,14 @@ SAMPLES = {
 }
 
 
-def get_sample_data(sample_id: str, condition: str, platform: str) -> SampleResponse | None:
+def get_sample_data(sample_id: str, condition: str, platform: str) -> Sample | None:
     if sample_id in SAMPLES:
         items_from_sample = SAMPLES[sample_id]
         sample_file_names = [item for item in items_from_sample if
                              item["condition"] == condition and item["platform"] == platform]
         if sample_file_names:
             sample_dict = sample_file_names[0]
-            return SampleResponse(id=sample_id, **sample_dict)
+            return Sample(id=sample_id, **sample_dict)
     else:
         return None
 
