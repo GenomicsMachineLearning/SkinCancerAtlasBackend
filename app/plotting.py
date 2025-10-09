@@ -135,7 +135,7 @@ def generate_cell_type_plot(adata, cell_type_column, cmap, alpha, spot_size, lib
     new_buffer = io.BytesIO(content)
     return new_buffer
 
-def generate_umap(adata, spot_size, legend_spot_size, dpi, level='Level1'):
+def generate_umap(adata, spot_size, legend_spot_size, dpi, color):
     plt.clf()
     plt.close('all')
 
@@ -145,7 +145,7 @@ def generate_umap(adata, spot_size, legend_spot_size, dpi, level='Level1'):
     ax = fig.gca()
     scanpy.pl.umap(
         adata,
-        color=[level],
+        color=[color],
         show=False,
         size=spot_size,
         title="",

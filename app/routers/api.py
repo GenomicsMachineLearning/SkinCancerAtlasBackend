@@ -281,3 +281,33 @@ async def get_gene_expression(
             status_code=404,
             detail=f"Sample not found {sample_id}, condition {condition}"
         )
+
+@router.get("/scrnaseq/{scrnaseq_id}/genes/{gene}")
+async def get_gene_expression(
+    scrnaseq_id: str,
+    gene: str,
+    spot_size: float = 25,
+    legend_spot_size: float = 80,
+    dpi: int = 120,
+    settings: Settings = fastapi.Depends(get_settings), ):
+
+    scrnaseq = get_scrnaseq_data(scrnaseq_id)
+    if scrnaseq is not None:
+        file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
+        adata = anndata.read_h5ad(file_path)
+        print(f"Read {file_path}")
+        image_buffer = generate_umap(adata, spot_size, legend_spot_size, dpi, gene)
+        image_buffer.seek(0)
+        return fastapi.responses.StreamingResponse(
+            image_buffer,
+            media_type="image/png",
+            headers={
+                "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
+                "X-ScRnaSeq-ID": scrnaseq_id,
+            }
+        )
+    else:
+        raise fastapi.HTTPException(
+            status_code=404,
+            detail=f"ScRnaSeq not found {scrnaseq_id}"
+        )
