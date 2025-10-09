@@ -1,20 +1,23 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import fastapi as fastapi
+import fastapi.middleware.cors as fastapi_middleware_cors
+import app as app
+import app.routers.health as app_routers_health
+import app.routers.samples as app_routers_samples
+import app.routers.scrnaseq as app_routers_scrnaseq
 from app.core.config import settings
-from app.routers import health, api
 
 # Create FastAPI application
-app = FastAPI(
-    title=settings.PROJECT_NAME,
+app = fastapi.FastAPI(
+    title=app.core.config.settings.PROJECT_NAME,
     description="FastAPI Skin Cancer Atlas Backend Service",
     version="1.0.0",
-    docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
-    redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None,
+    docs_url="/docs" if app.core.config.settings.ENVIRONMENT != "production" else None,
+    redoc_url="/redoc" if app.core.config.settings.ENVIRONMENT != "production" else None,
 )
 
 # Add CORS middleware
 app.add_middleware(
-    CORSMiddleware,
+    fastapi_middleware_cors.CORSMiddleware,
     allow_origins=settings.ALLOWED_HOSTS,
     allow_credentials=True,
     allow_methods=["*"],
@@ -22,8 +25,10 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(health.router, prefix="/health", tags=["health"])
-app.include_router(api.router, tags=["api"])
+app.include_router(app_routers_health.router, prefix="/health", tags=["health"])
+app.include_router(app_routers_samples.router, tags=["api"])
+app.include_router(app_routers_scrnaseq.router, tags=["api"])
+
 
 @app.get("/")
 async def root():
