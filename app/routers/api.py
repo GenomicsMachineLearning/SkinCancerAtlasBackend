@@ -82,7 +82,7 @@ async def get_cell_types(
     if sample is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-        image_buffer = generate_cell_type_plot(sample, adata, cmap, alpha,
+        image_buffer = generate_sample_cell_type_plot(sample, adata, cmap, alpha,
                                                spot_size, library_id, legend_spot_size,
                                                dpi, flip_x, flip_y)
         image_buffer.seek(0)
@@ -188,6 +188,61 @@ async def get_all_genes(
             detail=f"Sample not found {sample_id}, condition {condition}"
         )
 
+@router.get("/scrnaseq/{scrnaseq_id}/genes")
+async def get_all_genes(
+    scrnaseq_id: str,
+    measure: ExpressionMeasure = "mean",
+    limit: int = 100,
+    settings: Settings = fastapi.Depends(get_settings), ):
+    if limit > 500:
+        limit = 500
+
+    scrnaseq = get_scrnaseq_data(scrnaseq_id)
+    if scrnaseq is not None:
+        file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
+        adata = anndata.read_h5ad(file_path)
+        if hasattr(adata.X, 'toarray'):  # Handle sparse matrices
+            expression_matrix = adata.X.toarray()
+        else:
+            expression_matrix = adata.X
+
+        if measure == ExpressionMeasure.mean:
+            agg_expression = numpy.mean(expression_matrix, axis=0)
+        elif measure == ExpressionMeasure.median:
+            agg_expression = numpy.median(expression_matrix, axis=0)
+        elif measure == ExpressionMeasure.std:
+            agg_expression = numpy.std(expression_matrix, axis=0)
+        elif measure == ExpressionMeasure.mad:
+            median_vals = numpy.median(expression_matrix, axis=0)
+            mad_vals = numpy.median(
+                numpy.abs(expression_matrix - median_vals),
+                axis=0
+            )
+            agg_expression = mad_vals
+
+        # Calculate mean expression per gene (across all cells/spots)
+        gene_expression_df = pandas.DataFrame({
+            'gene': adata.var.index,
+            'agg_expression': agg_expression
+        })
+
+        # Sort by mean expression (descending - highest expression first)
+        gene_expression_df = gene_expression_df.sort_values('agg_expression',
+                                                            ascending=False)
+        ordered_genes = gene_expression_df['gene'][0:limit].tolist()
+        return fastapi.responses.JSONResponse(
+            ordered_genes,
+            headers={
+                "Content-Type": "application/json",
+                "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
+                "X-Sample-ID": scrnaseq_id,
+            }
+        )
+    else:
+        raise fastapi.HTTPException(
+            status_code=404,
+            detail=f"ScRnaSeq not found {scrnaseq_id}"
+        )
 
 @router.get("/samples/{sample_id}/{condition}/{platform}/genes/{gene}")
 async def get_gene_expression(
