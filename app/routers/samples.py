@@ -104,35 +104,8 @@ async def get_all_genes(
     if sample is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-        if hasattr(adata.X, 'toarray'):  # Handle sparse matrices
-            expression_matrix = adata.X.toarray()
-        else:
-            expression_matrix = adata.X
-
-        if measure == ExpressionMeasure.mean:
-            agg_expression = numpy.mean(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.median:
-            agg_expression = numpy.median(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.std:
-            agg_expression = numpy.std(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.mad:
-            median_vals = numpy.median(expression_matrix, axis=0)
-            mad_vals = numpy.median(
-                numpy.abs(expression_matrix - median_vals),
-                axis=0
-            )
-            agg_expression = mad_vals
-
-        # Calculate mean expression per gene (across all cells/spots)
-        gene_expression_df = pandas.DataFrame({
-            'gene': adata.var.index,
-            'agg_expression': agg_expression
-        })
-
-        # Sort by mean expression (descending - highest expression first)
-        gene_expression_df = gene_expression_df.sort_values('agg_expression',
-                                                            ascending=False)
-        ordered_genes = gene_expression_df['gene'][0:limit].tolist()
+        ordered_genes = ExpressionMeasure.apply_measure(adata, measure,
+                                                         adata.var.index, limit)
         return fastapi.responses.JSONResponse(
             ordered_genes,
             headers={

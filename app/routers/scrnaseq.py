@@ -72,49 +72,8 @@ async def get_all_genes(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-
-        expression_matrix = adata.X
-        gene_names = adata.var_names
-
-        if hasattr(expression_matrix, 'toarray'):
-            expression_matrix = expression_matrix.toarray()
-
-        if measure == ExpressionMeasure.total:
-            agg_expression = numpy.sum(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.non_zero_mean:
-            agg_expression = numpy.array([
-                numpy.mean(expression_matrix[:, i][expression_matrix[:, i] > 0])
-                if numpy.any(expression_matrix[:, i] > 0) else 0
-                for i in range(expression_matrix.shape[1])
-            ])
-        elif measure == ExpressionMeasure.mean:
-            agg_expression = numpy.mean(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.median:
-            agg_expression = numpy.median(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.std:
-            agg_expression = numpy.std(expression_matrix, axis=0)
-        elif measure == ExpressionMeasure.mad:
-            median_vals = numpy.median(expression_matrix, axis=0)
-            mad_vals = numpy.median(
-                numpy.abs(expression_matrix - median_vals),
-                axis=0
-            )
-            agg_expression = mad_vals
-        else:
-            raise fastapi.HTTPException(
-                status_code=404,
-                detail=f"Unknown measure {measure}"
-            )
-
-        # Produce top xxx genes.
-        gene_expression_df = pandas.DataFrame({
-            'gene': gene_names,
-            'agg_expression': agg_expression
-        })
-        gene_expression_df = gene_expression_df.sort_values('agg_expression',
-                                                            ascending=False)
-        ordered_genes = gene_expression_df['gene'][0:limit].tolist()
-
+        ordered_genes = ExpressionMeasure.apply_measure(adata, measure,
+                                                         adata.var_names, limit)
         return fastapi.responses.JSONResponse(
             ordered_genes,
             headers={
@@ -141,7 +100,6 @@ async def get_gene_expression(
 
     scrnaseq = get_scrnaseq_data(scrnaseq_id)
     if scrnaseq is not None:
-        print(f"Loading {scrnaseq.data}")
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
         gene_idx = adata.var_names.get_loc(gene)
