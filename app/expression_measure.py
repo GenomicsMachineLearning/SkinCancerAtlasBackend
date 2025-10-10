@@ -57,3 +57,6 @@ class ExpressionMeasure(str, enum.Enum):
             ordered_genes = None
 
         return ordered_genes
+
+    def __str__(self):
+        return self.value

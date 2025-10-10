@@ -19,7 +19,7 @@ The steps to run in a local conda environment include:
 We assume you already have conda installed.
 
 * Setup a conda environment:
-  * ```conda create create --prefix [some-directory]/conda/skin-cancer-atlas-backend python=3.10 -y```
+  * ```conda create --prefix [some-directory]/conda/skin-cancer-atlas-backend python=3.11 -y```
 * Activate conda environment:
   * ```conda activate [some-directory]/conda/skin-cancer-atlas-backend```
 
