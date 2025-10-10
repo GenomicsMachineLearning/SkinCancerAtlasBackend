@@ -184,7 +184,7 @@ SAMPLES = {
             }
         }
     ],
-    "67667": [
+    "6747": [
         {
             "condition": "melanoma",
             "platform": "cosmx",
