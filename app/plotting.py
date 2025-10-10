@@ -135,7 +135,8 @@ def generate_cell_type_plot(adata, cell_type_column, cmap, alpha, spot_size, lib
     new_buffer = io.BytesIO(content)
     return new_buffer
 
-def generate_umap(adata, spot_size, legend_spot_size, dpi, color):
+def generate_umap(adata, cmap, spot_size, legend_spot_size, dpi, color,
+                  gene_expr = None):
     plt.clf()
     plt.close('all')
 
@@ -143,14 +144,38 @@ def generate_umap(adata, spot_size, legend_spot_size, dpi, color):
         dpi = 300
     fig = plt.figure(figsize=(6.4, 6.4), dpi=dpi)
     ax = fig.gca()
+
+    if gene_expr is not None:
+        temp_col = f"_temp_{color}"
+        adata.obs[temp_col] = gene_expr
+        plot_color = temp_col
+    else:
+        plot_color = color
+
     scanpy.pl.umap(
         adata,
-        color=[color],
+        color=[plot_color],
+        cmap=cmap,
         show=False,
         size=spot_size,
         title="",
         ax=ax
     )
+
+    # Make the colorbar more compact
+    cbar = ax.collections[0].colorbar
+    if cbar is not None:
+        cbar.ax.tick_params(labelsize=8)
+        cbar.ax.yaxis.set_major_locator(plt.MaxNLocator(5))
+        ax_pos = ax.get_position()
+        cbar_pos = cbar.ax.get_position()
+        cbar.ax.set_position([
+            cbar_pos.x0,
+            ax_pos.y0,
+            cbar_pos.width * 0.5,
+            ax_pos.height
+        ])
+
     legend = ax.get_legend()
     if legend:
         for handle in legend.legend_handles:
