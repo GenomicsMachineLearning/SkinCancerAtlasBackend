@@ -18,6 +18,7 @@ class Sample(BaseModel):
     condition: _CONDITION
     platform: Platform
     data: str
+    lr: Optional[str] = None
     cell_types_image: Optional[str] = None
     h_and_e_image: Optional[str] = None
     render_params: dict = None
@@ -28,6 +29,7 @@ class SampleResponse(BaseModel):
     condition: _CONDITION
     platform: Platform
     render_params: dict = None
+    lr: Optional[str] = None
     links: Optional[dict] = None
 
     def add_links(self, base_url: str):
@@ -37,6 +39,9 @@ class SampleResponse(BaseModel):
             "h_and_e": f"{base_url}samples/{self.id}/{self.condition}/h_and_e",
             "gene_expression": f"{base_url}samples/{self.id}/{self.condition}/{self.platform}/genes",
         }
+        if self.lr is not None:
+            self.links['lrs'] = f"{base_url}samples/{self.id}/{self.condition}/{self.platform}/lrs"
+        del self.lr
 
 class ScRnaSeq(BaseModel):
     id: str

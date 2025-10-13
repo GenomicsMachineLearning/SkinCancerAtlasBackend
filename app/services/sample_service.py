@@ -211,6 +211,7 @@ SAMPLES = {
             "condition": "scc",
             "platform": "cosmx",
             "data": "P30_cutoff50_cosmx_clean.h5ad",
+            "lr": "P30_cutoff50_cosmx_lr_scores.h5ad",
             "render_params": {
                 "spot_size": 50,
                 "dpi": 150,

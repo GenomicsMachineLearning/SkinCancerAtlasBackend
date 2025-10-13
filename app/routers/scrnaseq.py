@@ -72,8 +72,8 @@ async def get_all_genes(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-        ordered_genes = ExpressionMeasure.apply_measure(adata, measure,
-                                                         adata.var_names, limit)
+        ordered_genes = ExpressionMeasure.apply_measure_adata(adata, measure,
+                                                              adata.var_names, limit)
         return fastapi.responses.JSONResponse(
             ordered_genes,
             headers={

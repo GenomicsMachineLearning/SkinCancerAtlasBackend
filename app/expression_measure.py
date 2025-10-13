@@ -11,7 +11,7 @@ class ExpressionMeasure(str, enum.Enum):
     std = "std"
 
     @staticmethod
-    def apply_measure(adata, measure, gene_names, limit):
+    def apply_measure_adata(adata, measure, gene_names, limit):
 
         # Get data as numpy array
         if hasattr(adata.X, 'toarray'):
@@ -19,6 +19,11 @@ class ExpressionMeasure(str, enum.Enum):
         else:
             expression_matrix = adata.X
 
+        return ExpressionMeasure.apply_measure(expression_matrix, measure, gene_names,
+                                               limit)
+
+    @staticmethod
+    def apply_measure(expression_matrix, measure, gene_names, limit):
         # Apply measure
         if measure == ExpressionMeasure.total:
             agg_expression = numpy.sum(expression_matrix, axis=0)
@@ -43,7 +48,6 @@ class ExpressionMeasure(str, enum.Enum):
             agg_expression = mad_vals
         else:
             agg_expression = None
-
         # Turn into panda object
         if agg_expression is not None:
             gene_expression_df = pandas.DataFrame({
@@ -55,7 +59,6 @@ class ExpressionMeasure(str, enum.Enum):
             ordered_genes = gene_expression_df['gene'][0:limit].tolist()
         else:
             ordered_genes = None
-
         return ordered_genes
 
     def __str__(self):

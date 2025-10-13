@@ -1,4 +1,6 @@
 import io
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import scanpy as scanpy
 from scanpy._utils import _empty

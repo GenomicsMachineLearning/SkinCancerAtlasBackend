@@ -2,8 +2,8 @@ from inspect import Parameter
 
 import fastapi as fastapi
 import typing as typing
-import anndata as anndata
 import numpy as numpy
+import anndata as anndata
 import pandas as pandas
 
 from app.plotting import generate_spatial_plot, generate_sample_cell_type_plot, \
@@ -104,10 +104,42 @@ async def get_all_genes(
     if sample is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-        ordered_genes = ExpressionMeasure.apply_measure(adata, measure,
-                                                         adata.var.index, limit)
+        ordered_genes = ExpressionMeasure.apply_measure_adata(adata, measure,
+                                                              adata.var.index, limit)
         return fastapi.responses.JSONResponse(
             ordered_genes,
+            headers={
+                "Content-Type": "application/json",
+                "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
+                "X-Sample-ID": sample_id,
+            }
+        )
+    else:
+        raise fastapi.HTTPException(
+            status_code=404,
+            detail=f"Sample not found {sample_id}, condition {condition}"
+        )
+
+@router.get("/samples/{sample_id}/{condition}/{platform}/lrs")
+async def get_all_genes(
+    sample_id: str,
+    condition: str,
+    platform: str,
+    measure: ExpressionMeasure = "total",
+    limit: int = 100,
+    settings: Settings = fastapi.Depends(get_settings), ):
+    if limit > 500:
+        limit = 500
+
+    sample = get_sample_data(sample_id, condition, platform)
+    if sample is not None:
+        file_path = settings.DATA_STORAGE_PATH / f"{sample.lr}"
+        p = pandas.read_hdf(file_path)
+        print(numpy.sum(p, axis=0))
+        ordered_lrs = ExpressionMeasure.apply_measure(p.to_numpy(), measure, p.columns, limit)
+        print(ordered_lrs)
+        return fastapi.responses.JSONResponse(
+            ordered_lrs,
             headers={
                 "Content-Type": "application/json",
                 "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
