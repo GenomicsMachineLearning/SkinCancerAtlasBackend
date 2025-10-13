@@ -135,9 +135,7 @@ async def get_all_genes(
     if sample is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{sample.lr}"
         p = pandas.read_hdf(file_path)
-        print(numpy.sum(p, axis=0))
         ordered_lrs = ExpressionMeasure.apply_measure(p.to_numpy(), measure, p.columns, limit)
-        print(ordered_lrs)
         return fastapi.responses.JSONResponse(
             ordered_lrs,
             headers={
@@ -158,6 +156,44 @@ async def get_gene_expression(
     condition: str,
     platform: str,
     gene: str,
+    cmap: str = 'inferno',
+    alpha: float = 0.5,
+    spot_size: float = 20,
+    library_id: str | None = None,
+    legend_spot_size: float = 1,
+    dpi: int = 120,
+    flip_x: bool = False,
+    flip_y: bool = False,
+    settings: Settings = fastapi.Depends(get_settings), ):
+    sample = get_sample_data(sample_id, condition, platform)
+    if sample is not None:
+        file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
+        adata = anndata.read_h5ad(file_path)
+
+        image_buffer = generate_spatial_plot(adata, gene, cmap, alpha,
+                                             library_id, spot_size, legend_spot_size,
+                                             dpi, flip_x, flip_y)
+        image_buffer.seek(0)
+        return fastapi.responses.StreamingResponse(
+            image_buffer,
+            media_type="image/png",
+            headers={
+                "Cache-Control": "public, max-age=3600",  # Cache for 1 hour
+                "X-Sample-ID": sample_id,
+            }
+        )
+    else:
+        raise fastapi.HTTPException(
+            status_code=404,
+            detail=f"Sample not found {sample_id}, condition {condition}"
+        )
+
+@router.get("/samples/{sample_id}/{condition}/{platform}/lrs/{lr}")
+async def get_all_genes(
+    sample_id: str,
+    condition: str,
+    platform: str,
+    lr: str,
     cmap: str = 'inferno',
     alpha: float = 0.5,
     spot_size: float = 20,
