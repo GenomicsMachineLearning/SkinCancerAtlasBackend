@@ -226,6 +226,16 @@ SAMPLES = {
                 "spot_size": 50,
                 "dpi": 150,
             }
+        },
+        {
+            "condition": "scc",
+            "platform": "visium",
+            "data": "P13_SCC_stlearn.h5ad",
+            "lr": "P13_SCC_lr_scores.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
         }
     ],
     "P30": [
@@ -234,6 +244,16 @@ SAMPLES = {
             "platform": "cosmx",
             "data": "P30_cutoff50_cosmx_clean.h5ad",
             "lr": "P30_cutoff50_cosmx_lr_scores.h5ad",
+            "render_params": {
+                "spot_size": 50,
+                "dpi": 150,
+            }
+        },
+        {
+            "condition": "scc",
+            "platform": "visium",
+            "data": "P30_SCC_stlearn.h5ad",
+            "lr": "P30_SCC_lr_scores.h5ad",
             "render_params": {
                 "spot_size": 50,
                 "dpi": 150,
