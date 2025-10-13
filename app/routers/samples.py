@@ -1,19 +1,14 @@
-from inspect import Parameter
-
 import fastapi as fastapi
 import typing as typing
-import numpy as numpy
 import anndata as anndata
 import pandas as pandas
 
-from app.plotting import generate_spatial_plot, generate_sample_cell_type_plot, \
-    generate_cell_type_plot, generate_umap
+from app.plotting import generate_spatial_plot, generate_sample_cell_type_plot
 from app.expression_measure import ExpressionMeasure
 from app.services.sample_service import get_sample_data, get_all_samples
 from app.core.config import Settings
 from app.core.dependencies import get_settings
-from app.models import SampleResponse, ScRnaSeqResponse, ScRnaSeq
-from app.services.scrnaseq_service import get_all_scrnaseq, get_scrnaseq_data
+from app.models import SampleResponse
 
 router = fastapi.APIRouter()
 

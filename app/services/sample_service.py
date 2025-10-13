@@ -59,6 +59,7 @@ SAMPLES = {
             "condition": "scc",
             "platform": "visium",
             "data": "B18_SCC_stlearn.h5ad",
+            "lr": "B18_SCC_lr_scores.h5ad",
             "render_params": {
                 "spot_size": "20",
             },
@@ -67,6 +68,7 @@ SAMPLES = {
             "condition": "bcc",
             "platform": "visium",
             "data": "B18_BCC_stlearn.h5ad",
+            "lr": "B18_BCC_lr_scores.h5ad",
             "render_params": {
                 "spot_size": "75",
             },
@@ -75,6 +77,7 @@ SAMPLES = {
             "condition": "scc",
             "platform": "cosmx",
             "data": "B18_SCC_cutoff50_cosmx_clean.h5ad",
+            "lr": "B18_SCC_cutoff50_cosmx_lr_scores.h5ad",
             "render_params": {
                 "spot_size": 50,
                 "dpi": 150,
@@ -84,6 +87,7 @@ SAMPLES = {
             "condition": "bcc",
             "platform": "cosmx",
             "data": "B18_BCC_cutoff50_cosmx_clean.h5ad",
+            "lr": "B18_BCC_cutoff50_cosmx_lr_scores.h5ad",
             "render_params": {
                 "spot_size": 50,
                 "dpi": 150,
