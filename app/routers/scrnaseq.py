@@ -68,7 +68,6 @@ async def get_cell_types(
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
         cell_types = adata.obs[level].unique().to_list()
-        print(cell_types)
         api_cell_types = [
             ScRnaSeqCellTypesResponse(**{"id": scrnaseq_id, "cell_type": cell_type})
             for cell_type in cell_types
