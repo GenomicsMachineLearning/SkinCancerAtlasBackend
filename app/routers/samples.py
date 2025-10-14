@@ -166,7 +166,6 @@ async def get_gene_expression(
     if sample is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{sample.data}"
         adata = anndata.read_h5ad(file_path)
-
         image_buffer = generate_spatial_plot(adata, gene, cmap, alpha,
                                              library_id, spot_size, legend_spot_size,
                                              dpi, flip_x, flip_y)
@@ -207,7 +206,6 @@ async def get_all_genes(
         p = pandas.read_hdf(lr_file_path)
         adata = anndata.read_h5ad(gene_file_path)
         adata.obs[lr] = p[lr].values
-
         image_buffer = generate_spatial_plot(adata, lr, cmap, alpha,
                                              library_id, spot_size, legend_spot_size,
                                              dpi, flip_x, flip_y)

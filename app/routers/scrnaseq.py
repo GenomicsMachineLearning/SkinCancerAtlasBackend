@@ -69,7 +69,7 @@ async def get_cell_types(
     scrnaseq = get_scrnaseq_data(scrnaseq_id)
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
-        adata = anndata.read_h5ad(file_path)
+        adata = anndata.read_h5ad(file_path, backed='r')
         cell_types = adata.obs[level].unique().tolist()
         api_cell_types = [
             ScRnaSeqCellTypesResponse(**{"id": scrnaseq_id, "cell_type": cell_type})
@@ -102,8 +102,10 @@ async def get_all_genes(
     scrnaseq = get_scrnaseq_data(scrnaseq_id)
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
-        adata = anndata.read_h5ad(file_path)
+        adata = anndata.read_h5ad(file_path, backed='r')
         subset = adata[adata.obs[level] == cell_type]
+        subset = subset.to_memory()
+        adata.file.close()
         ordered_genes = ExpressionMeasure.apply_measure_adata(subset, measure,
                                                               adata.var_names, limit)
         return fastapi.responses.JSONResponse(
@@ -136,7 +138,6 @@ async def get_gene_expression(
         adata = anndata.read_h5ad(file_path)
         gene_idx = adata.var_names.get_loc(gene)
         expr = adata.X.toarray()[:, gene_idx]
-
         image_buffer = app_plotting.generate_umap(adata, cmap, spot_size,
                                                   legend_spot_size, dpi, gene, expr)
         image_buffer.seek(0)
