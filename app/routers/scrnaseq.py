@@ -11,7 +11,7 @@ import app.plotting as app_plotting
 from app.expression_measure import ExpressionMeasure
 from app.core.config import Settings
 from app.core.dependencies import get_settings
-from app.models import ScRnaSeqResponse, ScRnaSeq
+from app.models import ScRnaSeqResponse, ScRnaSeq, ScRnaSeqCellTypesResponse
 from app.services.scrnaseq_service import get_all_scrnaseq, get_scrnaseq_data
 
 router = fastapi.APIRouter()
@@ -40,7 +40,6 @@ async def get_cell_types(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-        print(f"Read {file_path}")
         image_buffer = app_plotting.generate_umap(adata, cmap, spot_size,
                                                   legend_spot_size, dpi, level)
         image_buffer.seek(0)
@@ -58,10 +57,37 @@ async def get_cell_types(
             detail=f"ScRnaSeq not found {scrnaseq_id}"
         )
 
+@router.get("/scrnaseq/{scrnaseq_id}/cell_types", response_model=typing.List[ScRnaSeqCellTypesResponse])
+async def get_cell_types(
+    request: fastapi.Request,
+    scrnaseq_id: str,
+    level: str = 'Level1',
+    settings: Settings = fastapi.Depends(get_settings), ):
+    scrnaseq = get_scrnaseq_data(scrnaseq_id)
+    if scrnaseq is not None:
+        file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
+        adata = anndata.read_h5ad(file_path)
+        cell_types = adata.obs[level].unique().to_list()
+        print(cell_types)
+        api_cell_types = [
+            ScRnaSeqCellTypesResponse(**{"id": scrnaseq_id, "cell_type": cell_type})
+            for cell_type in cell_types
+        ]
+        for api_cell_type in api_cell_types:
+            api_cell_type.add_links(str(request.base_url))
+        return api_cell_types
+    else:
+        raise fastapi.HTTPException(
+            status_code=404,
+            detail=f"ScRnaSeq not found {scrnaseq_id}"
+        )
 
-@router.get("/scrnaseq/{scrnaseq_id}/genes")
+
+@router.get("/scrnaseq/{scrnaseq_id}/{cell_type}/genes")
 async def get_all_genes(
     scrnaseq_id: str,
+    cell_type: str,
+    level: str = 'Level1',
     measure: ExpressionMeasure = "total",
     limit: int = 100,
     settings: Settings = fastapi.Depends(get_settings), ):
@@ -72,7 +98,8 @@ async def get_all_genes(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-        ordered_genes = ExpressionMeasure.apply_measure_adata(adata, measure,
+        subset = adata[adata.obs[level] == cell_type]
+        ordered_genes = ExpressionMeasure.apply_measure_adata(subset, measure,
                                                               adata.var_names, limit)
         return fastapi.responses.JSONResponse(
             ordered_genes,
@@ -88,10 +115,12 @@ async def get_all_genes(
             detail=f"ScRnaSeq not found {scrnaseq_id}"
         )
 
-@router.get("/scrnaseq/{scrnaseq_id}/genes/{gene}")
+@router.get("/scrnaseq/{scrnaseq_id}/{cell_type}/genes/{gene}")
 async def get_gene_expression(
     scrnaseq_id: str,
+    cell_type: str,
     gene: str,
+    level: str = 'Level1',
     cmap: str = 'inferno',
     spot_size: float = 5,
     legend_spot_size: float = 80,
@@ -102,10 +131,11 @@ async def get_gene_expression(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-        gene_idx = adata.var_names.get_loc(gene)
-        expr = adata.X.toarray()[:, gene_idx]
+        subset = adata[adata.obs[level] == cell_type]
+        gene_idx = subset.var_names.get_loc(gene)
+        expr = subset.X.toarray()[:, gene_idx]
 
-        image_buffer = app_plotting.generate_umap(adata, cmap, spot_size,
+        image_buffer = app_plotting.generate_umap(subset, cmap, spot_size,
                                                   legend_spot_size, dpi, gene, expr)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
