@@ -131,11 +131,10 @@ async def get_gene_expression(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-        subset = adata[adata.obs[level] == cell_type]
-        gene_idx = subset.var_names.get_loc(gene)
-        expr = subset.X.toarray()[:, gene_idx]
+        gene_idx = adata.var_names.get_loc(gene)
+        expr = adata.X.toarray()[:, gene_idx]
 
-        image_buffer = app_plotting.generate_umap(subset, cmap, spot_size,
+        image_buffer = app_plotting.generate_umap(adata, cmap, spot_size,
                                                   legend_spot_size, dpi, gene, expr)
         image_buffer.seek(0)
         return fastapi.responses.StreamingResponse(
