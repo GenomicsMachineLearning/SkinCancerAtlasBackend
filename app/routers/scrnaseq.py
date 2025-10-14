@@ -17,13 +17,15 @@ from app.services.scrnaseq_service import get_all_scrnaseq, get_scrnaseq_data
 router = fastapi.APIRouter()
 
 @router.get("/scrnaseq", response_model=typing.List[ScRnaSeqResponse])
-async def get_scrnaseq(request: fastapi.Request):
+async def get_scrnaseq(request: fastapi.Request, response: fastapi.Response):
     api_scrnaseqs = [
         ScRnaSeq(**scrnaseq_data)
         for scrnaseq_data in get_all_scrnaseq()
     ]
     for rnaseq in api_scrnaseqs:
         rnaseq.add_links(str(request.base_url))
+
+    response.headers["Cache-Control"] = "public, max-age=3600"
     return api_scrnaseqs
 
 
@@ -60,6 +62,7 @@ async def get_cell_types(
 @router.get("/scrnaseq/{scrnaseq_id}/cell_types", response_model=typing.List[ScRnaSeqCellTypesResponse])
 async def get_cell_types(
     request: fastapi.Request,
+    response: fastapi.Response,
     scrnaseq_id: str,
     level: str = 'Level1',
     settings: Settings = fastapi.Depends(get_settings), ):
@@ -67,13 +70,16 @@ async def get_cell_types(
     if scrnaseq is not None:
         file_path = settings.DATA_STORAGE_PATH / f"{scrnaseq.data}"
         adata = anndata.read_h5ad(file_path)
-        cell_types = adata.obs[level].unique().to_list()
+        cell_types = adata.obs[level].unique().tolist()
         api_cell_types = [
             ScRnaSeqCellTypesResponse(**{"id": scrnaseq_id, "cell_type": cell_type})
             for cell_type in cell_types
         ]
         for api_cell_type in api_cell_types:
             api_cell_type.add_links(str(request.base_url))
+
+        response.headers["Cache-Control"] = "public, max-age=3600"
+        response.headers["X-ScRnaSeq-ID"] = scrnaseq_id
         return api_cell_types
     else:
         raise fastapi.HTTPException(
@@ -117,9 +123,7 @@ async def get_all_genes(
 @router.get("/scrnaseq/{scrnaseq_id}/{cell_type}/genes/{gene}")
 async def get_gene_expression(
     scrnaseq_id: str,
-    cell_type: str,
     gene: str,
-    level: str = 'Level1',
     cmap: str = 'inferno',
     spot_size: float = 5,
     legend_spot_size: float = 80,

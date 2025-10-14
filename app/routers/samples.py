@@ -14,7 +14,7 @@ router = fastapi.APIRouter()
 
 
 @router.get("/samples", response_model=typing.List[SampleResponse])
-async def get_samples(request: fastapi.Request):
+async def get_samples(request: fastapi.Request, response: fastapi.Response):
     api_samples = [
         SampleResponse(id=sample_id, **sample_data)
         for sample_id, sample_data_list in get_all_samples().items()
@@ -22,6 +22,8 @@ async def get_samples(request: fastapi.Request):
     ]
     for sample in api_samples:
         sample.add_links(str(request.base_url))
+
+    response.headers["Cache-Control"] = "public, max-age=3600"
     return api_samples
 
 @router.get("/samples/{sample_id}/{condition}/h_and_e")
