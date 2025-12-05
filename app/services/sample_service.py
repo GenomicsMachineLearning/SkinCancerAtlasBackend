@@ -54,7 +54,7 @@ SAMPLES = {
             "condition": "melanoma",
             "platform": "visium",
             "data": "48974_Mel_stlearn.h5ad",
-            "lr": "48974_Mel_lr_scores.had",
+            "lr": "48974_Mel_lr_scores.h5ad",
             "render_params": {
                 "spot_size": "125",
             },

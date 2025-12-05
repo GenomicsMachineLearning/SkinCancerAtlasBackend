@@ -17,7 +17,6 @@ We require data to be downloaded. The following need to be added to a directory 
 * [B18_BCC_stlearn.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_BCC_stlearn.h5ad) - 84.1 MB
 * [B18_SCC_cutoff50_cosmx_clean.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_SCC_cutoff50_cosmx_clean.h5ad) - 86.0 MB
 * [B18_SCC_stlearn.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_SCC_stlearn.h5ad) - 64.5 MB
-* [D12_cutoff50_cosmx_clean.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/D12_cutoff50_cosmx_clean.h5ad) - 25.7 MB
 * [E15_BCC_stlearn.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/E15_BCC_stlearn.h5ad) - 59.0 MB
 * [E15_SCC_stlearn.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/E15_SCC_stlearn.h5ad) - 51.9 MB
 * [F21_BCC_stlearn.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/F21_BCC_stlearn.h5ad) - 62.0 MB
@@ -26,7 +25,28 @@ We require data to be downloaded. The following need to be added to a directory 
 * [P30_cutoff50_cosmx_clean.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/P30_cutoff50_cosmx_clean.h5ad) - 12.2 MB
 
 LR data:
-* [*.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/*.h5ad) - 12.2 MB
+* [21031_Mel_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/21031_Mel_lr_scores.h5ad) - 3.9 MB
+* [23346-10SP_labeled_xenium_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/23346-10SP_labeled_xenium_lr_scores.h5ad) - 1.0 MB
+* [30037-07BR_labeled_xenium_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/30037-07BR_labeled_xenium_lr_scores.h5ad) - 1.6 MB
+* [48974_Mel_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/48974_Mel_lr_scores.h5ad) - 6.8 MB
+* [48974-2B_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/48974-2B_cutoff50_cosmx_lr_scores.h5ad) - 31.4 MB
+* [6475-07FC_labeled_xenium_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/6475-07FC_labeled_xenium_lr_scores.h5ad) - 582.5 KB
+* [66487_Mel_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/66487_Mel_lr_scores.h5ad) - 3.3 MB
+* [66487-1A_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/66487-1A_cutoff50_cosmx_lr_scores.h5ad) - 3.1 MB
+* [6747-085P_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/6747-085P_cutoff50_cosmx_lr_scores.h5ad) - 4.4 MB
+* [6767_Mel_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/6767_Mel_lr_scores.h5ad) - 1.2 MB
+* [9474-06BR_labeled_xenium_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/9474-06BR_labeled_xenium_lr_scores.h5ad) - 1.1 MB
+* [98594-09PY_labeled_xenium_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/98594-09PY_labeled_xenium_lr_scores.h5ad) - 1.8 MB
+* [B18_BCC_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_BCC_cutoff50_cosmx_lr_scores.h5ad) - 52.7 MB
+* [B18_BCC_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_BCC_lr_scores.h5ad) - 3.5 MB
+* [B18_SCC_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_SCC_cutoff50_cosmx_lr_scores.h5ad) - 57.3 MB
+* [B18_SCC_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/B18_SCC_lr_scores.h5ad) - 1.5 MB
+* [E15_BCC_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/E15_BCC_lr_scores.h5ad) - 549.0 KB
+* [E15_SCC_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/E15_SCC_lr_scores.h5ad) - 310.6 KB
+* [F21_BCC_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/F21_BCC_lr_scores.h5ad) - 950.9 KB
+* [F21_SCC_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/F21_SCC_lr_scores.h5ad) - 940.1 KB
+* [P13_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/P13_cutoff50_cosmx_lr_scores.h5ad) - 1.6 MB
+* [P30_cutoff50_cosmx_lr_scores.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/P30_cutoff50_cosmx_lr_scores.h5ad) - 1.2 MB
 
 scRNA-seq data:
 * [Mel_full_object_final_Nov26_clean.h5ad.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/Mel_full_object_final_Nov26_clean.h5ad) - 113.8 MB
