@@ -25,6 +25,13 @@ We require data to be downloaded. The following need to be added to a directory 
 * [P13_cutoff50_cosmx_clean.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/P13_cutoff50_cosmx_clean.h5ad) - 14.2 MB
 * [P30_cutoff50_cosmx_clean.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/P30_cutoff50_cosmx_clean.h5ad) - 12.2 MB
 
+LR data:
+* [*.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/*.h5ad) - 12.2 MB
+
+scRNA-seq data:
+* [Mel_full_object_final_Nov26_clean.h5ad.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/Mel_full_object_final_Nov26_clean.h5ad) - 113.8 MB
+* [SCC_full_object_final_Nov26_clean.h5ad](https://downloads.gmllab.com/skin-cancer-atlas/SCC_full_object_final_Nov26_clean.h5ad) - 350.2 MB
+
 ## Running Locally
 
 We have two methods for running the backend server:
